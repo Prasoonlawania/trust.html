@@ -455,6 +455,15 @@
         const closeModalButton = document.getElementById('closeModalButton');
         const copyright = document.getElementById('copyright');
         let copyrightClicks = 0;
+       copyright.addEventListener('click', () => {
+    copyrightClicks++;
+
+    if (copyrightClicks >= 2) {
+        adminLoginModal.style.display = 'flex';
+        copyrightClicks = 0;
+    }
+});
+
         const saveButton = document.getElementById('saveButton');
 
         // Function to check login status
@@ -719,6 +728,7 @@ setInterval(() => {
 
 
 </body></html>
+
 
 
 

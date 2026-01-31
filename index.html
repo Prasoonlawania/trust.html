@@ -738,8 +738,21 @@ setInterval(() => {
 }, 5000);
 </script>
 
+<script>
+window.onload = function () {
+    const btn = document.getElementById('adminLoginBtn');
+    const modal = document.getElementById('adminLoginModal');
+
+    if (btn && modal) {
+        btn.addEventListener('click', function () {
+            modal.style.display = 'flex';
+        });
+    }
+};
+</script>
 
 </body></html>
+
 
 
 

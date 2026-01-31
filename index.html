@@ -146,10 +146,7 @@
             <a href="#involved" class="block text-gray-600 hover:text-blue-600">Get Involved</a>
             <a href="#contact" class="block text-gray-600 hover:text-blue-600">Contact</a>
             <a href="#involved" class="block bg-blue-600 text-white text-center px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">Donate Now</a>
-           <button onclick="openAdminLogin()" class="block text-gray-600 hover:text-blue-600">
-    Admin Login
-</button>
-
+          
         </div>
     </header>
 
@@ -320,7 +317,8 @@
         </section>
 
         <!-- Get Involved Section -->
-        <section id="home" class="hero-bg text-white py-20 md:py-32">
+        <section id="involved" class="hero-bg text-white py-20 md:py-32">
+
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Get Involved</h2>
@@ -456,308 +454,80 @@
 
         // --- ADMIN PANEL LOGIC ---
 
-        const ADMIN_PASSWORD = "Clawania@9887"; // IMPORTANT: You can change this password
-        const UPDATES_STORAGE_KEY = 'ngoUpdates';
+          // --- ADMIN PANEL LOGIC ---
 
-        const adminLoginModal = document.getElementById('adminLoginModal');
-          const adminLoginBtn = document.getElementById('adminLoginBtn');
+const ADMIN_PASSWORD = "Clawania@9887";
+const UPDATES_STORAGE_KEY = 'ngoUpdates';
 
+const adminLoginModal = document.getElementById('adminLoginModal');
+const adminLoginBtn = document.getElementById('adminLoginBtn');
+const adminPanel = document.getElementById('adminPanel');
+const addUpdateButton = document.getElementById('addUpdateButton');
+const logoutButton = document.getElementById('logoutButton');
+const updateModal = document.getElementById('updateModal');
+const closeModalButton = document.getElementById('closeModalButton');
+const saveButton = document.getElementById('saveButton');
+
+function isAdminLoggedIn() {
+    return sessionStorage.getItem('isAdminLoggedIn') === 'true';
+}
+
+// Open login modal
 adminLoginBtn.addEventListener('click', () => {
     adminLoginModal.style.display = 'flex';
 });
 
-       function openAdminLogin() {
-    adminLoginModal.style.display = 'flex';
-}
+// Handle login
+document.getElementById('adminLoginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const password = document.getElementById('adminPassword').value;
 
-        const adminPanel = document.getElementById('adminPanel');
-        const addUpdateButton = document.getElementById('addUpdateButton');
-        const logoutButton = document.getElementById('logoutButton');
-        const updateModal = document.getElementById('updateModal');
-        const closeModalButton = document.getElementById('closeModalButton');
-        const copyright = document.getElementById('copyright');
-        
+    if (password === ADMIN_PASSWORD) {
+        sessionStorage.setItem('isAdminLoggedIn', 'true');
+        adminLoginModal.style.display = 'none';
+        adminPanel.style.display = "flex";
+        document.getElementById('adminPassword').value = '';
+        document.getElementById('loginError').textContent = '';
+        renderUpdates();
+    } else {
+        document.getElementById('loginError').textContent = 'Incorrect password.';
+    }
+});
 
-        const saveButton = document.getElementById('saveButton');
+// Logout
+logoutButton.addEventListener('click', () => {
+    sessionStorage.removeItem('isAdminLoggedIn');
+    adminPanel.style.display = "none";
+    renderUpdates();
+});
 
-        // Function to check login status
-        function isAdminLoggedIn() {
-            return sessionStorage.getItem('isAdminLoggedIn') === 'true';
-        }
-       // Show admin panel if already logged in
+// Show panel if already logged in
 if (isAdminLoggedIn()) {
     adminPanel.style.display = "flex";
 }
 
-// Open login modal from navbar button
-const adminLoginBtn = document.getElementById('adminLoginBtn');
-
-if (adminLoginBtn) {
-    adminLoginBtn.addEventListener('click', () => {
-        adminLoginModal.style.display = 'flex';
-    });
-}
-
-
-        // Handle Admin Login
-        document.getElementById('adminLoginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const password = document.getElementById('adminPassword').value;
-            if (password === ADMIN_PASSWORD) {
-                sessionStorage.setItem('isAdminLoggedIn', 'true');
-                adminLoginModal.style.display = 'none';
-               adminPanel.style.display = "flex";
-
-                document.getElementById('loginError').textContent = '';
-                document.getElementById('adminPassword').value = '';
-                showAdminPanel();
-                renderUpdates();
-            } else {
-                document.getElementById('loginError').textContent = 'Incorrect password.';
-            }
-        });
-        
-        // Save to PC
-        saveButton.addEventListener('click', () => {
-            // Get the current HTML of the page, including the DOCTYPE.
-            const htmlContent = `<!DOCTYPE html>\n` + document.documentElement.outerHTML;
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'index.html';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        });
-
-        // Logout
-        logoutButton.addEventListener('click', () => {
-    sessionStorage.removeItem('isAdminLoggedIn');
-    adminPanel.style.display = "none";
+// Open Add Update modal
+addUpdateButton.addEventListener('click', () => {
+    document.getElementById('updateForm').reset();
+    document.getElementById('updateId').value = '';
+    document.getElementById('modalTitle').textContent = 'Add New Update';
+    updateModal.style.display = 'block';
 });
 
-            adminPanel.classList.add('hidden');
-            renderUpdates(); // Re-render to hide admin buttons
-        });
-
-        function showAdminPanel() {
-            if (isAdminLoggedIn()) {
-                adminPanel.classList.remove('hidden');
-                lucide.createIcons();
-            }
-        }
-
-        // Show "Add Update" Modal
-        addUpdateButton.addEventListener('click', () => {
-            document.getElementById('updateForm').reset();
-            document.getElementById('updateId').value = '';
-            document.getElementById('modalTitle').textContent = 'Add New Update';
-            updateModal.style.display = 'block';
-        });
-
-        // Close Modals
-        closeModalButton.addEventListener('click', () => { updateModal.style.display = 'none'; });
-        window.onclick = function(event) {
-            if (event.target == updateModal || event.target == adminLoginModal || event.target == confirmModal) {
-                updateModal.style.display = "none";
-                adminLoginModal.style.display = "none";
-                confirmModal.style.display = "none";
-            }
-        }
-
-        // --- CRUD for Updates using localStorage ---
-        function getUpdates() {
-            const updates = localStorage.getItem(UPDATES_STORAGE_KEY);
-            return updates ? JSON.parse(updates) : [];
-        }
-
-        function saveUpdates(updates) {
-            localStorage.setItem(UPDATES_STORAGE_KEY, JSON.stringify(updates));
-        }
-
-        // Handle Form Submission for Add/Edit Update
-        document.getElementById('updateForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const id = document.getElementById('updateId').value;
-            const title = document.getElementById('updateTitle').value;
-            const description = document.getElementById('updateDescription').value;
-            const imageUrl = document.getElementById('updateImageUrl').value;
-            
-            let updates = getUpdates();
-            const newUpdate = {
-                id: id || new Date().getTime(), // Use existing id for edit, or create new one
-                date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric'}),
-                title,
-                description,
-                imageUrl,
-            };
-
-            if (id) { // Editing existing update
-                updates = updates.map(u => u.id == id ? newUpdate : u);
-            } else { // Adding new update
-                updates.unshift(newUpdate);
-            }
-            
-            saveUpdates(updates);
-            renderUpdates();
-            updateModal.style.display = 'none';
-        });
-
-        // Render updates on the page
-        function renderUpdates() {
-            const updatesContainer = document.getElementById('updates-container');
-            const updates = getUpdates();
-            updatesContainer.innerHTML = '';
-
-            if (updates.length === 0) {
-                updatesContainer.innerHTML = '<p class="text-center col-span-full text-gray-500">No updates posted yet. Check back soon!</p>';
-                return;
-            }
-
-            updates.forEach(update => {
-                const imageUrl = update.imageUrl || 'https://placehold.co/600x400/e2e8f0/333333?text=Event+Photo';
-                const updateCard = document.createElement('div');
-                updateCard.className = 'bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-300';
-                updateCard.innerHTML = `
-                    <img src="${imageUrl}" alt="${update.title}" class="w-full h-48 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/333333?text=Image+Not+Found';">
-                    <div class="p-6">
-                        <p class="text-sm text-gray-500 mb-2">${update.date}</p>
-                        <h3 class="text-xl font-semibold mb-2">${update.title}</h3>
-                        <p class="text-gray-600">${update.description}</p>
-                        ${isAdminLoggedIn() ? `
-                        <div class="mt-4 pt-4 border-t flex justify-end space-x-2">
-                            <button class="edit-btn text-blue-600 hover:text-blue-800" data-id="${update.id}"><i data-lucide="edit" class="h-5 w-5"></i></button>
-                            <button class="delete-btn text-red-600 hover:text-red-800" data-id="${update.id}"><i data-lucide="trash-2" class="h-5 w-5"></i></button>
-                        </div>` : ''}
-                    </div>
-                `;
-                updatesContainer.appendChild(updateCard);
-            });
-            
-            if(isAdminLoggedIn()) {
-                lucide.createIcons(); // Re-render icons for edit/delete buttons
-                addAdminEventListeners();
-            }
-        }
-        
-        // --- Confirmation Modal Logic ---
-        const confirmModal = document.getElementById('confirmModal');
-        const confirmOk = document.getElementById('confirmOk');
-        const confirmCancel = document.getElementById('confirmCancel');
-        const confirmText = document.getElementById('confirmText');
-        let confirmCallback = null;
-
-        function showConfirmModal(message, callback) {
-            confirmText.textContent = message;
-            confirmCallback = callback;
-            confirmModal.style.display = 'block';
-        }
-
-        confirmOk.addEventListener('click', () => {
-            if (confirmCallback) {
-                confirmCallback();
-            }
-            confirmModal.style.display = 'none';
-        });
-
-        confirmCancel.addEventListener('click', () => {
-            confirmModal.style.display = 'none';
-        });
-
-        function addAdminEventListeners() {
-            document.querySelectorAll('.edit-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const id = e.currentTarget.getAttribute('data-id');
-                    const updates = getUpdates();
-                    const updateToEdit = updates.find(u => u.id == id);
-                    if (updateToEdit) {
-                        document.getElementById('updateId').value = updateToEdit.id;
-                        document.getElementById('updateTitle').value = updateToEdit.title;
-                        document.getElementById('updateDescription').value = updateToEdit.description;
-                        document.getElementById('updateImageUrl').value = updateToEdit.imageUrl;
-                        document.getElementById('modalTitle').textContent = 'Edit Update';
-                        updateModal.style.display = 'block';
-                    }
-                });
-            });
-
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const id = e.currentTarget.getAttribute('data-id');
-                    showConfirmModal('Do you really want to delete this update? This action cannot be undone.', () => {
-                        let updates = getUpdates();
-                        updates = updates.filter(u => u.id != id);
-                        saveUpdates(updates);
-                        renderUpdates();
-                    });
-                });
-            });
-        }
-
-        // --- Initial Load & Content ---
-        function addInitialUpdates() {
-            if (!localStorage.getItem(UPDATES_STORAGE_KEY)) {
-                const initialUpdates = [
-                    {
-                        id: new Date().getTime() + 1,
-                        date: "15 September, 2025",
-                        title: "Successful Health Camp in Rural Bharatpur",
-                        description: "We provided free health check-ups and medicines to over 200 villagers, focusing on women and children's health.",
-                        imageUrl: "https://images.unsplash.com/photo-1583912268183-a34d4a7f2f2a?q=80&w=1974&auto=format&fit=crop"
-                    },
-                    {
-                        id: new Date().getTime(),
-                        date: "28 August, 2025",
-                        title: "Plantation Drive for a Greener Tomorrow",
-                        description: "Our volunteers and local community members planted over 500 saplings near the Keoladeo National Park periphery.",
-                        imageUrl: "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?q=80&w=1974&auto=format&fit=crop"
-                    }
-                ];
-                saveUpdates(initialUpdates);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            addInitialUpdates();
-            showAdminPanel();
-            renderUpdates();
-        });
+// Close modal
+closeModalButton.addEventListener('click', () => {
+    updateModal.style.display = 'none';
 });
-    </script>
 
-
-
-<script>
-const slides = document.querySelectorAll('.slide');
-let index = 0;
-
-setInterval(() => {
-    slides[index].classList.remove('active');
-    index = (index + 1) % slides.length;
-    slides[index].classList.add('active');
-}, 5000);
-</script>
-
-<script>
-window.onload = function () {
-    const btn = document.getElementById('adminLoginBtn');
-    const modal = document.getElementById('adminLoginModal');
-
-    if (btn && modal) {
-        btn.addEventListener('click', function () {
-            modal.style.display = 'flex';
-        });
-    }
-};
-</script>
-
-</body></html>
-
-
-
-
-
-
-
-
-
+// Save to PC
+// Save to PC
+saveButton.addEventListener('click', () => {
+    const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'index.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+});

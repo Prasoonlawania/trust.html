@@ -125,11 +125,12 @@
     <a href="#work" class="text-gray-600 hover:text-blue-600">Our Work</a>
     <a href="#updates" class="text-gray-600 hover:text-blue-600">Updates</a>
     <a href="#involved" class="text-gray-600 hover:text-blue-600">Get Involved</a>
+   
     <a href="#contact" class="text-gray-600 hover:text-blue-600">Contact</a>
+<button id="adminLoginBtn" class="text-gray-600 hover:text-blue-600">
+    Admin Login
+</button>
 
-    <button onclick="openAdminLogin()" class="text-gray-600 hover:text-blue-600">
-        Admin Login
-    </button>
 </div>
 
             <a href="#involved" class="hidden md:block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">Donate Now</a>
@@ -441,6 +442,8 @@
     </div>
 
     <script>
+       document.addEventListener('DOMContentLoaded', function () {
+
         // Lucide Icons activation
         lucide.createIcons();
 
@@ -457,6 +460,12 @@
         const UPDATES_STORAGE_KEY = 'ngoUpdates';
 
         const adminLoginModal = document.getElementById('adminLoginModal');
+          const adminLoginBtn = document.getElementById('adminLoginBtn');
+
+adminLoginBtn.addEventListener('click', () => {
+    adminLoginModal.style.display = 'flex';
+});
+
        function openAdminLogin() {
     adminLoginModal.style.display = 'flex';
 }
@@ -467,15 +476,7 @@
         const updateModal = document.getElementById('updateModal');
         const closeModalButton = document.getElementById('closeModalButton');
         const copyright = document.getElementById('copyright');
-        let copyrightClicks = 0;
-       copyright.addEventListener('click', () => {
-    copyrightClicks++;
-
-    if (copyrightClicks >= 2) {
-        adminLoginModal.style.display = 'flex';
-        copyrightClicks = 0;
-    }
-});
+        
 
         const saveButton = document.getElementById('saveButton');
 
@@ -488,17 +489,15 @@ if (isAdminLoggedIn()) {
     adminPanel.style.display = "flex";
 }
 
+// Open login modal from navbar button
+const adminLoginBtn = document.getElementById('adminLoginBtn');
 
-        // Show login modal after 5 clicks on copyright text
-        copyright.addEventListener('click', () => {
-            copyrightClicks++;
-            if (copyrightClicks >= 5) {
-                if (!isAdminLoggedIn()) {
-                    adminLoginModal.style.display = 'block';
-                }
-                copyrightClicks = 0; // Reset counter
-            }
-        });
+if (adminLoginBtn) {
+    adminLoginBtn.addEventListener('click', () => {
+        adminLoginModal.style.display = 'flex';
+    });
+}
+
 
         // Handle Admin Login
         document.getElementById('adminLoginForm').addEventListener('submit', (e) => {
@@ -723,7 +722,7 @@ if (isAdminLoggedIn()) {
             showAdminPanel();
             renderUpdates();
         });
-
+});
     </script>
 
 
@@ -741,6 +740,7 @@ setInterval(() => {
 
 
 </body></html>
+
 
 
 

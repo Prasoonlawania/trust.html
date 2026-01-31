@@ -119,14 +119,19 @@
             <a href="#" class="text-xl font-bold text-gray-800">
                 <span class="text-blue-600">SMLDD</span> Charitable Trust
             </a>
-            <div class="hidden md:flex space-x-6">
-                <a href="#home" class="text-gray-600 hover:text-blue-600">Home</a>
-                <a href="#about" class="text-gray-600 hover:text-blue-600">About</a>
-                <a href="#work" class="text-gray-600 hover:text-blue-600">Our Work</a>
-                <a href="#updates" class="text-gray-600 hover:text-blue-600">Updates</a>
-                <a href="#involved" class="text-gray-600 hover:text-blue-600">Get Involved</a>
-                <a href="#contact" class="text-gray-600 hover:text-blue-600">Contact</a>
-            </div>
+<div class="hidden md:flex space-x-6">
+    <a href="#home" class="text-gray-600 hover:text-blue-600">Home</a>
+    <a href="#about" class="text-gray-600 hover:text-blue-600">About</a>
+    <a href="#work" class="text-gray-600 hover:text-blue-600">Our Work</a>
+    <a href="#updates" class="text-gray-600 hover:text-blue-600">Updates</a>
+    <a href="#involved" class="text-gray-600 hover:text-blue-600">Get Involved</a>
+    <a href="#contact" class="text-gray-600 hover:text-blue-600">Contact</a>
+
+    <button onclick="openAdminLogin()" class="text-gray-600 hover:text-blue-600">
+        Admin Login
+    </button>
+</div>
+
             <a href="#involved" class="hidden md:block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">Donate Now</a>
             <button id="mobile-menu-button" class="md:hidden">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="menu" class="lucide lucide-menu h-6 w-6"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg>
@@ -140,6 +145,10 @@
             <a href="#involved" class="block text-gray-600 hover:text-blue-600">Get Involved</a>
             <a href="#contact" class="block text-gray-600 hover:text-blue-600">Contact</a>
             <a href="#involved" class="block bg-blue-600 text-white text-center px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">Donate Now</a>
+           <button onclick="openAdminLogin()" class="block text-gray-600 hover:text-blue-600">
+    Admin Login
+</button>
+
         </div>
     </header>
 
@@ -448,6 +457,10 @@
         const UPDATES_STORAGE_KEY = 'ngoUpdates';
 
         const adminLoginModal = document.getElementById('adminLoginModal');
+       function openAdminLogin() {
+    adminLoginModal.style.display = 'flex';
+}
+
         const adminPanel = document.getElementById('adminPanel');
         const addUpdateButton = document.getElementById('addUpdateButton');
         const logoutButton = document.getElementById('logoutButton');
@@ -728,6 +741,7 @@ setInterval(() => {
 
 
 </body></html>
+
 
 
 
